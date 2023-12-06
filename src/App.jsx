@@ -3,25 +3,29 @@ import Header from './components/Header'
 import './App.css'
 
 function App() {
-
   const [gifs, setGifs] = useState({ searchTerm: '' })
-  // const [gifList, setGifList] = useState({})
+  const [gifList, setGifList] = useState([])
 
   const handleInput = (field, value) => {
       setGifs({ ...gifs, [field]: value })
   }
 
-  function renderGifs(data) {
-    console.log('render data:', data.data[1])
-  }
+  const showingGifs = gifList.map(gif => {
+    console.log('gif:', gif)
+    return (
+      <div key={gif.id}>
+        <img src={gif.images.fixed_height.url}></img>
+        {/* {gif.title} */}
+      </div>
+    )
+  })
 
   const fetchGifs = async (searchTerm) => {
-      const apiUrl = `https://api.giphy.com/v1/gifs/search?api_key=baIM7M4AoEmFD2lEMbZHVA1cd7gD42eq&q=${searchTerm}&limit=25&offset=0&rating=g&lang=en&bundle=messaging_non_clips`
+      const apiUrl = `https://api.giphy.com/v1/gifs/search?api_key=baIM7M4AoEmFD2lEMbZHVA1cd7gD42eq&q=${searchTerm}&limit=5&offset=0&rating=g&lang=en&bundle=messaging_non_clips`
       try {
         const response = await fetch(apiUrl)
         const data = await response.json()
-        console.log('results: ', data)
-        renderGifs(data)
+        setGifList(data.data)
       } catch (err) {
         console.log(err)
       }
@@ -49,6 +53,7 @@ function App() {
             value='Search'
           />
         </form>
+        {showingGifs}
       </div>
     </>
   )
